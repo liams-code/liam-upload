@@ -4,8 +4,8 @@ import datetime
 import schedule
 from fbprophet import Prophet
 
-access = "you"
-secret = "you"
+access = "gG6XsE1xIpxkSEPrYBGgmRuDZrGftHc0QR0VCR1G"
+secret = "sBI8q1na4FdZt46Sjtlw4c0csGVz9075qcMXBqGM"
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -59,7 +59,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-ETH"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , ETH 3000원 이상으로 바꿈
+# 자동매매 시작 , ETH 5000원 이상으로 바꿈
 while True:
     try:
         now = datetime.datetime.now()
@@ -72,11 +72,11 @@ while True:
             current_price = get_current_price("KRW-ETH")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
-                if krw > 3000:
+                if krw > 5000:
                     upbit.buy_market_order("KRW-ETH", krw*0.9995)
         else:
             eth = get_balance("ETH")
-            if eth > 0.001:
+            if eth > 0.0017:
                 upbit.sell_market_order("KRW-ETH", eth*0.9995)
         time.sleep(1)
     except Exception as e:
