@@ -59,7 +59,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-ETH"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , ETH 5000원 이상으로 바꿈
+# 자동매매 시작 , ETH 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
 while True:
     try:
         now = datetime.datetime.now()
