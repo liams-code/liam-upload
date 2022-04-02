@@ -77,7 +77,7 @@ while True:
         else:
             ada = get_balance("ADA")
             if ada > 4:
-                upbit.sell_market_order("KRW-ADA", eth*0.9995)
+                upbit.sell_market_order("KRW-ADA", ada*0.9995)
         time.sleep(1)
     except Exception as e:
         print(e)
