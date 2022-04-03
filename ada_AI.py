@@ -78,21 +78,23 @@ while True:
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
 
-        if start_time < now < end_time - datetime.timedelta(seconds=10):
+        if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-ADA", 0.3)
             current_price = get_current_price("KRW-ADA")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-ADA", krw*0.9995)
-        
-        current_price = get_current_price("KRW-ADA")            
-        avg_buy_price = get_buy_average("KRW-ADA")  
-        elif current_price >= avg_buy_price*1.1 or current_price <= avg_buy_price*0.95
-             ada = get_balance("ADA")
-            if ada > 4:
-                upbit.sell_market_order("KRW-ADA", ada*0.9995)
-        
+
+
+        elif start_time < now < end_time - datetime.timedelta(hours=2):
+            current_price = get_current_price("KRW-ADA")
+            avg_buy_price = get_buy_average("KRW-ADA")
+            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+                ada = get_balance("ADA")
+                if ada > 4:
+                    upbit.sell_market_order("KRW-ADA", ada*0.9995)
+
         else:
             ada = get_balance("ADA")
             if ada > 4:
