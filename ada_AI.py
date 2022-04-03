@@ -34,6 +34,17 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
+def get_buy_average(ticker):
+      """평균매수가"""
+    balances = upbit.get_balances()
+    for a in balances:
+        if a['currency'] == ticker:
+            if a['avg_buy_price'] is not None:
+                return float(a['avg_buy_price'])
+            else:
+                return 0
+
+
 predicted_close_price = 0
 def predict_price(ticker):
     """Prophet으로 당일 종가 가격 예측 ----6시간"""
@@ -74,6 +85,13 @@ while True:
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-ADA", krw*0.9995)
+                    
+        avg_buy_price = get_buy_average("KRW-ADA")  
+        elif current_price >= avg_buy_price*1.1 or current_price <= avg_buy_price*0.95
+             ada = get_balance("ADA")
+            if ada > 4:
+                upbit.sell_market_order("KRW-ADA", ada*0.9995)
+        
         else:
             ada = get_balance("ADA")
             if ada > 4:
