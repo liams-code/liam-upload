@@ -93,7 +93,7 @@ while True:
             if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
                 eos = get_balance("EOS")
                 if eos > 1.5:
-                    upbit.sell_market_order("KRW-EOS", xtz*0.9995)
+                    upbit.sell_market_order("KRW-EOS", eos*0.9995)
 
         else:
             eos = get_balance("EOS")
