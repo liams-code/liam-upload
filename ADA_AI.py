@@ -56,7 +56,7 @@ def predict_price(ticker):
     data = df[['ds','y']]
     model = Prophet()
     model.fit(data)
-    future = model.make_future_dataframe(periods=6, freq='H')
+    future = model.make_future_dataframe(periods=24, freq='H')
     forecast = model.predict(future)
     closeDf = forecast[forecast['ds'] == forecast.iloc[-1]['ds'].replace(hour=9)]
     if len(closeDf) == 0:
@@ -90,7 +90,7 @@ while True:
         elif start_time < now < end_time - datetime.timedelta(hours=2):
             current_price = get_current_price("KRW-ADA")
             avg_buy_price = get_buy_average("KRW-ADA")
-            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.95):
                 ada = get_balance("ADA")
                 if ada > 4:
                     upbit.sell_market_order("KRW-ADA", ada*0.9995)
