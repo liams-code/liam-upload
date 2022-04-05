@@ -34,11 +34,22 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
+def get_buy_average(ticker):
+    """매수 평균가"""
+    balances = upbit.get_balances()
+    for b in balances:
+        if b['currency'] == ticker:
+            if b['avg_buy_price'] is not None:
+                return float(b['avg_buy_price'])
+            else:
+                return 0
+    return 0
+
 predicted_close_price = 0
 def predict_price(ticker):
-    """Prophet으로 당일 종가 가격 예측"""
+    """Prophet으로 당일 종가 가격 24시간 예측 ---30분간격"""
     global predicted_close_price
-    df = pyupbit.get_ohlcv(ticker, interval="minute60")
+    df = pyupbit.get_ohlcv(ticker, interval="minute30")
     df = df.reset_index()
     df['ds'] = df['index']
     df['y'] = df['close']
@@ -67,16 +78,26 @@ while True:
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
 
-        if start_time < now < end_time - datetime.timedelta(seconds=10):
-            target_price = get_target_price("KRW-ETH", 0.4)
+        if start_time < now < end_time - datetime.timedelta(hours=1):
+            target_price = get_target_price("KRW-ETH", 0.3)
             current_price = get_current_price("KRW-ETH")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-ETH", krw*0.9995)
+
+
+        elif start_time < now < end_time - datetime.timedelta(hours=2):
+            current_price = get_current_price("KRW-ETH")
+            avg_buy_price = get_buy_average("KRW-ETH")
+            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+                eth = get_balance("ETH")
+                if eth > 0.0014:
+                    upbit.sell_market_order("KRW-ETH", eth*0.9995)
+
         else:
             eth = get_balance("ETH")
-            if eth > 0.0017:
+            if eth > 0.0014:
                 upbit.sell_market_order("KRW-ETH", eth*0.9995)
         time.sleep(1)
     except Exception as e:
