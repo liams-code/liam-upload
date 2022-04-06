@@ -34,16 +34,9 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-def get_buy_average(ticker):
-    """매수 평균가"""
-    balances = upbit.get_balances()
-    for b in balances:
-        if b['currency'] == ticker:
-            if b['avg_buy_price'] is not None:
-                return float(b['avg_buy_price'])
-            else:
-                return 0
-    return 0
+def get_avg_buy_price(ticker):
+     """매수 평균가"""
+     return upbit.get_avg_buy_price(ticker=ticker)
 
 predicted_close_price = 0
 def predict_price(ticker):
@@ -77,6 +70,13 @@ while True:
         start_time = get_start_time("KRW-LINK")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
+        
+        current_price = get_current_price("KRW-LINK")
+        avg_buy_price = get_buy_average("KRW-LINK")
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.95):
+            link = get_balance("LINK")
+            if link > 0.26:
+                upbit.sell_market_order("KRW-LINK", link*0.9995)
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-LINK", 0.3)
@@ -86,18 +86,9 @@ while True:
                 if krw > 5000:
                     upbit.buy_market_order("KRW-LINK", krw*0.9995)
 
-
-        elif start_time < now < end_time - datetime.timedelta(hours=2):
-            current_price = get_current_price("KRW-LINK")
-            avg_buy_price = get_buy_average("KRW-LINK")
-            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
-                link = get_balance("LINK")
-                if link > 0.25:
-                    upbit.sell_market_order("KRW-LINK", link*0.9995)
-
         else:
             link = get_balance("LINK")
-            if link > 0.25:
+            if link > 0.26:
                 upbit.sell_market_order("KRW-LINK", link*0.9995)
         time.sleep(1)
     except Exception as e:
