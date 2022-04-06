@@ -34,16 +34,10 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-def get_buy_average(ticker):
-    """매수 평균가"""
-    balances = upbit.get_balances()
-    for b in balances:
-        if b['currency'] == ticker:
-            if b['avg_buy_price'] is not None:
-                return float(b['avg_buy_price'])
-            else:
-                return 0
-    return 0
+def get_avg_buy_price(ticker):
+     """매수 평균가"""
+     return upbit.get_avg_buy_price(ticker=ticker)
+
 
 predicted_close_price = 0
 def predict_price(ticker):
