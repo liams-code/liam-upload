@@ -40,7 +40,7 @@ def get_avg_buy_price(ticker):
 
 predicted_close_price = 0
 def predict_price(ticker):
-    """Prophet으로 당일 종가 가격 예측 ----6시간"""
+    """Prophet으로 당일 종가 가격 예측 ----24시간"""
     global predicted_close_price
     df = pyupbit.get_ohlcv(ticker, interval="minute30")
     df = df.reset_index()
@@ -49,7 +49,7 @@ def predict_price(ticker):
     data = df[['ds','y']]
     model = Prophet()
     model.fit(data)
-    future = model.make_future_dataframe(periods=6, freq='H')
+    future = model.make_future_dataframe(periods=24, freq='H')
     forecast = model.predict(future)
     closeDf = forecast[forecast['ds'] == forecast.iloc[-1]['ds'].replace(hour=9)]
     if len(closeDf) == 0:
@@ -78,7 +78,7 @@ while True:
             if xtz > 1.11:
                 upbit.sell_market_order("KRW-XTZ", xtz*0.9995)
 
-        if start_time < now < end_time - datetime.timedelta(hours=1):
+        if start_time < now < end_time - datetime.timedelta(hours=2):
             target_price = get_target_price("KRW-XTZ", 0.3)
             current_price = get_current_price("KRW-XTZ")
             if target_price < current_price and current_price < predicted_close_price:
