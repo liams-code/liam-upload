@@ -71,7 +71,14 @@ while True:
         start_time = get_start_time("KRW-FLOW")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
-
+            
+        current_price = get_current_price("KRW-FLOW")
+        avg_buy_price = get_buy_average("KRW-FLOW")
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+            flow = get_balance("FLOW")
+            if flow > 0.6:
+                upbit.sell_market_order("KRW-FLOW", flow*0.9995)
+           
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-FLOW", 0.3)
             current_price = get_current_price("KRW-FLOW")
@@ -79,15 +86,6 @@ while True:
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-FLOW", krw*0.9995)
-
-
-        elif start_time < now < end_time - datetime.timedelta(hours=2):
-            current_price = get_current_price("KRW-FLOW")
-            avg_buy_price = get_buy_average("KRW-FLOW")
-            if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
-                flow = get_balance("FLOW")
-                if flow > 0.6:
-                    upbit.sell_market_order("KRW-FLOW", flow*0.9995)
 
         else:
             flow = get_balance("FLOW")
