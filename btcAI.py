@@ -34,6 +34,10 @@ def get_current_price(ticker):
     """현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
+def get_avg_buy_price(ticker):
+     """매수 평균가"""
+     return upbit.get_avg_buy_price(ticker=ticker)
+
 predicted_close_price = 0
 def predict_price(ticker):
     """Prophet으로 당일 종가 가격 예측"""
@@ -66,7 +70,14 @@ while True:
         start_time = get_start_time("KRW-BTC")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
-
+        
+        current_price = get_current_price("KRW-BTC")
+        avg_buy_price = get_buy_average("KRW-BTC")
+        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.94):
+            btc = get_balance("BTC")
+            if btc > 0.00008:
+                upbit.sell_market_order("KRW-BTC", btc*0.9995)
+                         
         if start_time < now < end_time - datetime.timedelta(seconds=10):
             target_price = get_target_price("KRW-BTC", 0.4)
             current_price = get_current_price("KRW-BTC")
