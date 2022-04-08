@@ -72,7 +72,7 @@ while True:
         schedule.run_pending()
         
         current_price = get_current_price("KRW-XTZ")
-        avg_buy_price = get_buy_average("KRW-XTZ")
+        avg_buy_price = get_avg_buy_price("KRW-XTZ")
         if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
             xtz = get_balance("XTZ")
             if xtz > 1.11:
