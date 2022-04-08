@@ -72,8 +72,8 @@ while True:
         schedule.run_pending()
         
         current_price = get_current_price("KRW-ETH")
-        avg_buy_price = get_buy_average("KRW-ETH")
-        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+        avg_buy_price = get_avg_buy_price("KRW-ETH")
+        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.95):
             eth = get_balance("ETH")
             if eth > 0.0015:
                 upbit.sell_market_order("KRW-ETH", eth*0.9995)
