@@ -72,7 +72,7 @@ while True:
         schedule.run_pending()
         
         current_price = get_current_price("KRW-ADA")
-        avg_buy_price = get_buy_average("KRW-ADA")
+        avg_buy_price = get_avg_buy_price("KRW-ADA")
         if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.95):
             ada = get_balance("ADA")
             if ada > 4:
