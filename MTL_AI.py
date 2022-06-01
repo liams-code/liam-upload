@@ -75,7 +75,7 @@ while True:
         avg_buy_price = get_avg_buy_price("KRW-MTL")
         if current_price > (avg_buy_price*1.19) or current_price < (avg_buy_price*0.97):
             mtl = get_balance("MTL")
-            if mtl > 10:
+            if mtl > 2.8:
                 upbit.sell_market_order("KRW-MTL", mtl*0.9995)
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
@@ -88,7 +88,7 @@ while True:
 
         else:
             mtl = get_balance("MTL")
-            if mtl > 10:
+            if mtl > 2.8:
                 upbit.sell_market_order("KRW-MTL", mtl*0.9995)
         time.sleep(1)
     except Exception as e:
