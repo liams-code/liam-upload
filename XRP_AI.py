@@ -40,7 +40,7 @@ def get_avg_buy_price(ticker):
 
 predicted_close_price = 0
 def predict_price(ticker):
-    """Prophet으로 당일 종가 가격 예측 ----6시간"""
+    """Prophet으로 당일 종가 가격 예측 ----24시간"""
     global predicted_close_price
     df = pyupbit.get_ohlcv(ticker, interval="minute30")
     df = df.reset_index()
@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-XRP"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , XRP 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , XRP 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 7시에 매도하게 함.
 while True:
     try:
         now = datetime.datetime.now()
@@ -75,7 +75,7 @@ while True:
         avg_buy_price = get_avg_buy_price("KRW-XRP")
         if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.97):
             xrp = get_balance("XRP")
-            if xrp > 5.4:
+            if xrp > 10:
                 upbit.sell_market_order("KRW-XRP", xrp*0.9995)
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
@@ -88,7 +88,7 @@ while True:
 
         else:
             xrp = get_balance("XRP")
-            if xrp > 5.4:
+            if xrp > 10:
                 upbit.sell_market_order("KRW-XRP", xrp*0.9995)
         time.sleep(1)
     except Exception as e:
