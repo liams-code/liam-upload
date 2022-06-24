@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-EOS"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , EOS 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , EOS 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-EOS")
         avg_buy_price = get_avg_buy_price("KRW-EOS")
-        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.94):
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.97):
             eos = get_balance("EOS")
-            if eos > 1.6:
+            if eos > 2:
                 upbit.sell_market_order("KRW-EOS", eos*0.9995)
+                break
         
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-EOS", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             eos = get_balance("EOS")
-            if eos > 1.6:
+            if eos > 2:
                 upbit.sell_market_order("KRW-EOS", eos*0.9995)
         time.sleep(1)
     except Exception as e:
