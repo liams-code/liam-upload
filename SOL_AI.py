@@ -56,40 +56,41 @@ def predict_price(ticker):
         closeDf = forecast[forecast['ds'] == data.iloc[-1]['ds'].replace(hour=9)]
     closeValue = closeDf['yhat'].values[0]
     predicted_close_price = closeValue
-predict_price("KRW-TRX")
-schedule.every().hour.do(lambda: predict_price("KRW-TRX"))
+predict_price("KRW-SOL")
+schedule.every().hour.do(lambda: predict_price("KRW-SOL"))
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , trx 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함 (10-3).
+# 자동매매 시작 , trx 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함 (10-3).break,0.3
 while True:
     try:
         now = datetime.datetime.now()
-        start_time = get_start_time("KRW-TRX")
+        start_time = get_start_time("KRW-SOL")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
         
-        current_price = get_current_price("KRW-TRX")
-        avg_buy_price = get_avg_buy_price("KRW-TRX")
+        current_price = get_current_price("KRW-SOL")
+        avg_buy_price = get_avg_buy_price("KRW-SOL")
         if current_price > (avg_buy_price*1.10) or current_price < (avg_buy_price*0.97):
-            trx = get_balance("TRX")
-            if trx > 46:
-                upbit.sell_market_order("KRW-TRX", trx*0.9995)
+            sol = get_balance("SOL")
+            if sol > 0.09:
+                upbit.sell_market_order("KRW-SOL", sol*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
-            target_price = get_target_price("KRW-TRX", 0.3)
-            current_price = get_current_price("KRW-TRX")
+            target_price = get_target_price("KRW-SOL", 0.3)
+            current_price = get_current_price("KRW-SOL")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-TRX", krw*0.9995)
+                    upbit.buy_market_order("KRW-SOL", krw*0.9995)
 
         else:
-            trx = get_balance("TRX")
-            if trx > 46:
-                upbit.sell_market_order("KRW-TRX", trx*0.9995)
+            sol = get_balance("SOL")
+            if sol > 0.09:
+                upbit.sell_market_order("KRW-SOL", sol*0.9995)
         time.sleep(1)
     except Exception as e:
         print(e)
