@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-SAND"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , SAND 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함 (10-3).
+# 자동매매 시작 , SAND 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break,10/3,0.3.
 while True:
     try:
         now = datetime.datetime.now()
@@ -77,6 +77,7 @@ while True:
             sand = get_balance("SAND")
             if sand > 2.8:
                 upbit.sell_market_order("KRW-SAND", sand*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-SAND", 0.3)
