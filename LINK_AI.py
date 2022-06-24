@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-LINK"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , LINK 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , LINK 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break,10/3,0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-LINK")
         avg_buy_price = get_buy_average("KRW-LINK")
-        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.95):
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.97):
             link = get_balance("LINK")
-            if link > 0.26:
+            if link > 0.3:
                 upbit.sell_market_order("KRW-LINK", link*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-LINK", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             link = get_balance("LINK")
-            if link > 0.26:
+            if link > 0.3:
                 upbit.sell_market_order("KRW-LINK", link*0.9995)
         time.sleep(1)
     except Exception as e:
