@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-XRP"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , XRP 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , XRP 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break, 10/3,0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-XRP")
         avg_buy_price = get_avg_buy_price("KRW-XRP")
-        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.97):
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.97):
             xrp = get_balance("XRP")
             if xrp > 10:
                 upbit.sell_market_order("KRW-XRP", xrp*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-XRP", 0.3)
