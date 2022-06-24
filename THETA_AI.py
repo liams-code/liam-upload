@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-THETA"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , THETA 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , THETA 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break,12/4,0.3.
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-THETA")
         avg_buy_price = get_avg_buy_price("KRW-THETA")
-        if current_price > (avg_buy_price*1.11) or current_price < (avg_buy_price*0.96):
+        if current_price > (avg_buy_price*1.12) or current_price < (avg_buy_price*0.96):
             theta = get_balance("THETA")
-            if theta > 1.2:
+            if theta > 1.8:
                 upbit.sell_market_order("KRW-THETA", theta*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-THETA", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             theta = get_balance("THETA")
-            if theta > 1.2:
+            if theta > 1.8:
                 upbit.sell_market_order("KRW-THETA", theta*0.9995)
         time.sleep(1)
     except Exception as e:
