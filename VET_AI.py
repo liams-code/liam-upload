@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-VET"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , VET 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , VET 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.11/4, break, 0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -75,8 +75,9 @@ while True:
         avg_buy_price = get_avg_buy_price("KRW-VET")
         if current_price > (avg_buy_price*1.11) or current_price < (avg_buy_price*0.96):
             vet = get_balance("VET")
-            if vet > 64:
+            if vet > 100:
                 upbit.sell_market_order("KRW-VET", vet*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-VET", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             vet = get_balance("VET")
-            if vet > 64:
+            if vet > 100:
                 upbit.sell_market_order("KRW-VET", vet*0.9995)
         time.sleep(1)
     except Exception as e:
