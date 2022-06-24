@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-QTUM"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , QTUM 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , QTUM 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break,11/3,0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-QTUM")
         avg_buy_price = get_avg_buy_price("KRW-QTUM")
-        if current_price > (avg_buy_price*1.11) or current_price < (avg_buy_price*0.95):
+        if current_price > (avg_buy_price*1.11) or current_price < (avg_buy_price*0.93):
             qtum = get_balance("QTUM")
-            if qtum > 0.6:
+            if qtum > 0.9:
                 upbit.sell_market_order("KRW-QTUM", qtum*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-QTUM", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             qtum = get_balance("QTUM")
-            if qtum > 0.6:
+            if qtum > 0.9:
                 upbit.sell_market_order("KRW-QTUM", qtum*0.9995)
         time.sleep(1)
     except Exception as e:
