@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-MATIC"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , XRP 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break, 13/3,0.3
+# 자동매매 시작 , 폴리곤 MATIC 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break, 13/3,0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -75,7 +75,7 @@ while True:
         avg_buy_price = get_avg_buy_price("KRW-MATIC")
         if current_price > (avg_buy_price*1.13) or current_price < (avg_buy_price*0.97):
             mat = get_balance("MATIC")
-            if mat > 10:
+            if mat > 6:
                 upbit.sell_market_order("KRW-MATIC", mat*0.9995)
                 break
 
@@ -89,7 +89,7 @@ while True:
 
         else:
             mat = get_balance("MATIC")
-            if mat > 10:
+            if mat > 6:
                 upbit.sell_market_order("KRW-MATIC", mat*0.9995)
         time.sleep(1)
     except Exception as e:
