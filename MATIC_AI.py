@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-MATIC"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , 폴리곤 MATIC 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break, 13/3,0.3
+# 자동매매 시작 , 폴리곤 MATIC 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함.break, 12/3,0.2
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,14 +73,14 @@ while True:
         
         current_price = get_current_price("KRW-MATIC")
         avg_buy_price = get_avg_buy_price("KRW-MATIC")
-        if current_price > (avg_buy_price*1.13) or current_price < (avg_buy_price*0.97):
+        if current_price > (avg_buy_price*1.12) or current_price < (avg_buy_price*0.97):
             mat = get_balance("MATIC")
             if mat > 6:
                 upbit.sell_market_order("KRW-MATIC", mat*0.9995)
                 break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
-            target_price = get_target_price("KRW-MATIC", 0.3)
+            target_price = get_target_price("KRW-MATIC", 0.2)
             current_price = get_current_price("KRW-MATIC")
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
