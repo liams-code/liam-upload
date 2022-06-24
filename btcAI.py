@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-BTC")
         avg_buy_price = get_avg_buy_price("KRW-BTC")
-        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.96):
+        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.98):
             btc = get_balance("BTC")
-            if btc > 0.00008:
+            if btc > 0.0001:
                 upbit.sell_market_order("KRW-BTC", btc*0.9995)
+                break
                          
         if start_time < now < end_time - datetime.timedelta(hours=2):
             target_price = get_target_price("KRW-BTC", 0.4)
