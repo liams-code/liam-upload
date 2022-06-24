@@ -63,7 +63,7 @@ schedule.every().hour.do(lambda: predict_price("KRW-ETH"))
 upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
-# 자동매매 시작 , ETH 5000원 이상으로 바꿈 , seconds을 hours=2로 바꿔서 7시에 매도하게 함.
+# 자동매매 시작 , ETH 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함. break, 10/3,0.3
 while True:
     try:
         now = datetime.datetime.now()
@@ -73,10 +73,11 @@ while True:
         
         current_price = get_current_price("KRW-ETH")
         avg_buy_price = get_avg_buy_price("KRW-ETH")
-        if current_price > (avg_buy_price*1.07) or current_price < (avg_buy_price*0.95):
+        if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.97):
             eth = get_balance("ETH")
-            if eth > 0.0015:
+            if eth > 0.003:
                 upbit.sell_market_order("KRW-ETH", eth*0.9995)
+                break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
             target_price = get_target_price("KRW-ETH", 0.3)
@@ -88,7 +89,7 @@ while True:
 
         else:
             eth = get_balance("ETH")
-            if eth > 0.0015:
+            if eth > 0.003:
                 upbit.sell_market_order("KRW-ETH", eth*0.9995)
         time.sleep(1)
     except Exception as e:
