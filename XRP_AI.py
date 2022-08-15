@@ -2,7 +2,8 @@ import time
 import pyupbit
 import datetime
 import schedule
-from fbprophet import Prophet
+import pandas as pd
+from prophet import Prophet
 
 access = "you"
 secret = "you"
