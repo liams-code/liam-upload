@@ -2,7 +2,8 @@ import time
 import pyupbit
 import datetime
 import schedule
-from fbprophet import Prophet
+import pandas as pd
+from prophet import Prophet
 
 access = "you"
 secret = "you"
@@ -66,31 +67,33 @@ print("autotrade start")
 # 자동매매 시작 , ADA 5000원 이상으로 바꿈 , seconds을 hours=1로 바꿔서 8시에 매도하게 함. break 만듬
 while True:
     try:
+        tk = "KRW-ADA"
+        tka = "ADA"
         now = datetime.datetime.now()
-        start_time = get_start_time("KRW-ADA")
+        start_time = get_start_time("{}".format(tk))
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
         
-        current_price = get_current_price("KRW-ADA")
-        avg_buy_price = get_avg_buy_price("KRW-ADA")
+        current_price = get_current_price("{}".format(tk))
+        avg_buy_price = get_avg_buy_price("{}".format(tk))
         if current_price > (avg_buy_price*1.1) or current_price < (avg_buy_price*0.97):
-            ada = get_balance("ADA")
-            if ada > 4:
-                upbit.sell_market_order("KRW-ADA", ada*0.9995)
+            ada = get_balance("{}".format(tka))
+            if ada > 0.003:
+                upbit.sell_market_order("{}".format(tk), ada*0.9995)
                 break
 
         if start_time < now < end_time - datetime.timedelta(hours=1):
-            target_price = get_target_price("KRW-ADA", 0.3)
-            current_price = get_current_price("KRW-ADA")
+            target_price = get_target_price("{}".format(tk), 0.3)
+            current_price = get_current_price("{}".format(tk))
             if target_price < current_price and current_price < predicted_close_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-ADA", krw*0.9995)
+                    upbit.buy_market_order("{}".format(tk), krw*0.9995)
 
         else:
-            ada = get_balance("ADA")
-            if ada > 4:
-                upbit.sell_market_order("KRW-ADA", ada*0.9995)
+            ada = get_balance("{}".format(tka))
+            if ada > 0.003:
+                upbit.sell_market_order("{}".format(tk), ada*0.9995)
         time.sleep(1)
     except Exception as e:
         print(e)
